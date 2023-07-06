@@ -2,23 +2,48 @@
 
 [![](https://dcbadge.vercel.app/api/server/nhvCbCtKV?style=flat)](https://discord.gg/nhvCbCtKV)
 
-This is a replit instance of chat-bot-template-py
+# Introduction
 
-chat-bot-template-py is a frontend app created in Flask powered by [embedchain](https://github.com/embedchain/embedchain). embedchain is a framework to easily create LLM powered bots over any dataset. If you want a javascript version, check out [embedchain-js](https://github.com/embedchain/embedchainjs)
+Welcome to Embedchain Chat Template tutorial. This repository includes the starter code to quickly get a bot running.
 
-It abstracts the entire process of loading dataset, chunking it, creating embeddings and then storing in vector database.
+In this tutorial, we will create a Naval Ravikant Bot. This bot will have following context from the following sources.
 
-You can add a single or multiple dataset using `.add` and `.add_local` function and then use `.query` function to find an answer from the added datasets.
-
-If you want to create a Naval Ravikant bot which has 2 of his blog posts, as well as a question and answer pair you supply, all you need to do is add the links to the blog posts and the QnA pair and embedchain will create a bot for you.
+- [Naval Ravikant Joe Rogan Podcast](https://www.youtube.com/watch?v=3qHkcs3kG44)
+- [The Almanack of Naval Ravikant](https://navalmanack.s3.amazonaws.com/Eric-Jorgenson_The-Almanack-of-Naval-Ravikant_Final.pdf)
+- [Free Markets Provide the Best Feedback from Naval's blog](https://nav.al/feedback)
+- [More Compute Power Doesn’t Produce AGI from Naval's blog](https://nav.al/agi)
+- Question / Answer Pair:
+  - Q: Who is Naval Ravikant?
+  - A: Naval Ravikant is an Indian-American entrepreneur and investor.
 
 # Getting Started
 
 ## Installation
 
-- Fork a copy of this replit template.
+- First make sure that you have the following installed.
 
-- Now open a shell and install the required packages using
+* Python 3 and virtualenv
+
+- Make sure that you have the package cloned locally, using the following commands
+
+```bash
+git clone https://github.com/embedchain/chat-bot-template-py.git
+cd chat-bot-template-py
+```
+
+- Create and activate your virtual environment as follows
+
+```bash
+# For Linux Users
+virtualenv -p $(which python3) pyenv
+source pyenv/bin/activate
+
+# For Windows users
+virtualenv pyenv
+.\pyenv\Scripts\activate
+```
+
+- Now install the required packages using
 
 ```bash
 pip install -r requirements.txt
@@ -26,7 +51,7 @@ pip install -r requirements.txt
 
 - We use OpenAI's embedding model to create embeddings for chunks and ChatGPT API as LLM to get answer given the relevant docs. Make sure that you have an OpenAI account and an API key. If you have don't have an API key, you can create one by visiting [this link](https://platform.openai.com/account/api-keys).
 
-- Click on Secrets and add the required environment variables, you can check sample.env fo reference.
+- Rename the `sample.env` to `.env` and set your environment variables.
 
 ```bash
 OPENAI_API_KEY=""
@@ -34,17 +59,29 @@ OPENAI_API_KEY=""
 
 ## Usage
 
-- Run the development server, using the Run button on top.
+- Activate your virtual environment
 
-- Please note that running the app through Shell might not work as it is unable to read the secrets. Always run your app using the console or the Run button at the top.
+```bash
+# For Linux Users
+source pyenv/bin/activate
 
-- A webview tab will pop open. You can use this tab or copy the link to view your live app.
+# For Windows Users
+.\pyenv\Scripts\activate
+```
+
+- Run the development server, using
+
+```bash
+python main.py
+```
+
+- Open [http://localhost:8000](http://localhost:8000) with your browser to see the result.
 
 - By default we have setup a `Naval Ravikant Chat Bot` app.
 
-- Wait for the data to load completely and then ask any query using the input box and then click on Submit.
+- Wait for the data to load completely and then ask any query using the chat box and then click on Submit.
 
-- Your answer will be displayed in the result box below.
+- Your results will be displayed as chats in the chat window
 
 - To customize and create your own bot app, go to `main.py` and enter your own data sources in the load_app() function in the following manner
 
@@ -66,106 +103,6 @@ bot_name="Naval Ravikant"
 ```
 
 - Now reload or run your app again to see the changes.
-
-### App Types
-
-We have two types of App.
-
-#### 1. App (uses OpenAI models, paid)
-
-```python
-from embedchain import App
-
-naval_chat_bot = App()
-```
-
-- `App` uses OpenAI's model, so these are paid models. You will be charged for embedding model usage and LLM usage.
-
-- `App` uses OpenAI's embedding model to create embeddings for chunks and ChatGPT API as LLM to get answer given the relevant docs. Make sure that you have an OpenAI account and an API key. If you have dont have an API key, you can create one by visiting [this link](https://platform.openai.com/account/api-keys).
-
-- Once you have the API key, set it in an environment variable called `OPENAI_API_KEY`
-
-```python
-import os
-os.environ["OPENAI_API_KEY"] = "sk-xxxx"
-```
-
-#### 2. OpenSourceApp (uses opensource models, free)
-
-```python
-from embedchain import OpenSourceApp
-
-naval_chat_bot = OpenSourceApp()
-```
-
-- `OpenSourceApp` uses open source embedding and LLM model. It uses `all-MiniLM-L6-v2` from Sentence Transformers library as the embedding model and `gpt4all` as the LLM.
-
-- Here there is no need to setup any api keys. You just need to install embedchain package and these will get automatically installed.
-
-- Once you have imported and instantiated the app, every functionality from here onwards is the same for either type of app.
-
-### Add Dataset
-
-- This step assumes that you have already created an `app` instance by either using `App` or `OpenSourceApp`. We are calling our app instance as `naval_chat_bot`
-
-- Now use `.add` function to add any dataset.
-
-```python
-
-# naval_chat_bot = App() or
-# naval_chat_bot = OpenSourceApp()
-
-# Embed Online Resources
-naval_chat_bot.add("youtube_video", "https://www.youtube.com/watch?v=3qHkcs3kG44")
-naval_chat_bot.add("pdf_file", "https://navalmanack.s3.amazonaws.com/Eric-Jorgenson_The-Almanack-of-Naval-Ravikant_Final.pdf")
-naval_chat_bot.add("web_page", "https://nav.al/feedback")
-naval_chat_bot.add("web_page", "https://nav.al/agi")
-
-# Embed Local Resources
-naval_chat_bot.add_local("qna_pair", ("Who is Naval Ravikant?", "Naval Ravikant is an Indian-American entrepreneur and investor."))
-```
-
-- If there is any other app instance in your script or app, you can change the import as
-
-```python
-from embedchain import App as EmbedChainApp
-from embedchain import OpenSourceApp as EmbedChainOSApp
-
-# or
-
-from embedchain import App as ECApp
-from embedchain import OpenSourceApp as ECOSApp
-```
-
-## Interface Types
-
-### Query Interface
-
-- This interface is like a question answering bot. It takes a question and gets the answer. It does not maintain context about the previous chats.
-
-- To use this, call `.query` function to get the answer for any query.
-
-```python
-print(naval_chat_bot.query("What unique capacity does Naval argue humans possess when it comes to understanding explanations or concepts?"))
-# answer: Naval argues that humans possess the unique capacity to understand explanations or concepts to the maximum extent possible in this physical reality.
-```
-
-### Chat Interface
-
-- This interface is chat interface where it remembers previous conversation. Right now it remembers 5 conversation by default.
-
-- To use this, call `.chat` function to get the answer for any query.
-
-```python
-print(naval_chat_bot.chat("How to be happy in life?"))
-# answer: The most important trick to being happy is to realize happiness is a skill you develop and a choice you make. You choose to be happy, and then you work at it. It's just like building muscles or succeeding at your job. It's about recognizing the abundance and gifts around you at all times.
-
-print(naval_chat_bot.chat("who is naval ravikant?"))
-# answer: Naval Ravikant is an Indian-American entrepreneur and investor.
-
-print(naval_chat_bot.chat("what did the author say about happiness?"))
-# answer: The author, Naval Ravikant, believes that happiness is a choice you make and a skill you develop. He compares the mind to the body, stating that just as the body can be molded and changed, so can the mind. He emphasizes the importance of being present in the moment and not getting caught up in regrets of the past or worries about the future. By being present and grateful for where you are, you can experience true happiness.
-```
 
 ## Format supported
 
@@ -223,35 +160,6 @@ To supply your own QnA pair, use the data_type as `qna_pair` and enter a tuple. 
 app.add_local('qna_pair', ("Question", "Answer"))
 ```
 
-# How does it work?
-
-Creating a chat bot over any dataset needs the following steps to happen
-
-- load the data
-- create meaningful chunks
-- create embeddings for each chunk
-- store the chunks in vector database
-
-Whenever a user asks any query, following process happens to find the answer for the query
-
-- create the embedding for query
-- find similar documents for this query from vector database
-- pass similar documents as context to LLM to get the final answer.
-
-The process of loading the dataset and then querying involves multiple steps and each steps has nuances of it is own.
-
-- How should I chunk the data? What is a meaningful chunk size?
-- How should I create embeddings for each chunk? Which embedding model should I use?
-- How should I store the chunks in vector database? Which vector database should I use?
-- Should I store meta data along with the embeddings?
-- How should I find similar documents for a query? Which ranking model should I use?
-
-These questions may be trivial for some but for a lot of us, it needs research, experimentation and time to find out the accurate answers.
-
-embedchain is a framework which takes care of all these nuances and provides a simple interface to create bots over any dataset.
-
-In the first release, we are making it easier for anyone to get a chatbot over any dataset up and running in less than a minute. All you need to do is create an app instance, add the data sets using `.add` function and then use `.query` function to get the relevant answer.
-
 # Tech Stack
 
 embedchain is built on the following stack:
@@ -260,11 +168,3 @@ embedchain is built on the following stack:
 - [OpenAI's Ada embedding model](https://platform.openai.com/docs/guides/embeddings) to create embeddings
 - [OpenAI's ChatGPT API](https://platform.openai.com/docs/guides/gpt/chat-completions-api) as LLM to get answers given the context
 - [Chroma](https://github.com/chroma-core/chroma) as the vector database to store embeddings
-
-# Author
-
-- Taranjeet Singh ([@taranjeetio](https://twitter.com/taranjeetio))
-
-## Maintainer
-
-- [sahilyadav902](https://github.com/sahilyadav902)
