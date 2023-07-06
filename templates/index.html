@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Embedchain ChatBot</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=Roboto:wght@100;300;400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  </head>
+  <body>
+    <div class="flex flex-col h-screen antialiased text-gray-800 bg-gray-100">
+      <a href="https://github.com/embedchain/embedchain" class="text-center p-4 text-5xl font-extrabold leading-none tracking-tight">{{bot_name}} Chat Bot</a>
+      <div class="flex flex-row h-full w-full overflow-x-hidden">
+
+        <!--Chat Window-->
+        <div class="flex flex-col flex-auto h-full">
+          <div
+            class="flex flex-col flex-auto flex-shrink-0 h-full p-4 mb-4"
+          >
+            <div class="flex flex-col h-full mb-20 overflow-x-auto">
+              <div class="flex flex-col h-full">
+                <div class="grid grid-cols-12 gap-y-2">
+
+                    <!-- Greeting Message -->
+                    <div class="col-start-1 col-end-8 p-3 rounded-lg">
+                        <div class="flex flex-row items-center">
+                        <div class="flex items-center justify-center h-10 w-10 rounded-full bg-black text-white flex-shrink-0">
+                            B
+                        </div>
+                        <div class="relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl">
+                            <div>Hi, I am {{bot_name}}. How can I help you today?</div>
+                        </div>
+                        </div>
+                    </div>
+
+                    {% for sender, message in chats %}
+                        {% if sender == "B" %}
+                            <!-- Bot Message -->
+                            <div class="col-start-1 col-end-8 p-3 rounded-lg">
+                                <div class="flex flex-row items-center">
+                                <div class="flex items-center justify-center h-10 w-10 rounded-full bg-black text-white flex-shrink-0">
+                                    B
+                                </div>
+                                <div class="relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl">
+                                    <div>{{ message }}</div>
+                                </div>
+                                </div>
+                            </div>
+                        {% else %}
+                            <!-- Human Message -->
+                            <div class="col-start-6 col-end-13 p-3 rounded-lg">
+                                <div class="flex items-center justify-start flex-row-reverse">
+                                    <div class="flex items-center justify-center h-10 w-10 rounded-full bg-blue-800 text-white flex-shrink-0">
+                                    H
+                                    </div>
+                                    <div class="relative mr-3 text-sm bg-blue-100 py-2 px-4 shadow rounded-xl">
+                                    <div>{{ message }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+
+                    <!-- Loader -->
+                    <div id="loader" class="hidden col-start-1 col-end-8 p-3 rounded-lg">
+                        <div class="flex flex-row items-center">
+                        <div class="flex items-center justify-center h-10 w-10 rounded-full bg-black text-white flex-shrink-0">
+                            B
+                        </div>
+                        <div class="relative ml-3 text-sm bg-white py-2 px-4 shadow rounded-xl">
+                            <div>
+                                <div class="flex items-center justify-center space-x-2 animate-pulse">
+                                    <div class="w-2 h-2 bg-black rounded-full"></div>
+                                    <div class="w-2 h-2 bg-black rounded-full"></div>
+                                    <div class="w-2 h-2 bg-black rounded-full"></div>
+                                </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+
+                <!--Messages End-->
+                </div>
+                </div>
+              </div>
+            </div>
+
+            <!--Input Form-->
+            <form id="query-form" method="POST" class="bg-gray-100 flex flex-row items-center w-full px-4 fixed bottom-0 pt-2 pb-4">
+                <!--Input Box-->
+                <div class="flex-grow ml-4">
+                    <div class="relative w-full">
+                    <input
+                        id="query"
+                        name="query"
+                        type="text"
+                        placeholder="Enter your query..."
+                        class="flex w-full border-2 border-black rounded-xl focus:outline-none focus:border-blue-800 pl-4 h-11"
+                    />
+                    </div>
+                </div>
+
+                <!--Send Button-->
+                <div class="ml-4">
+                    <button
+                        type="submit"
+                        id="sender"
+                        class="flex items-center justify-center bg-black hover:bg-blue-800 rounded-xl font-bold text-lg text-white px-6 h-11 flex-shrink-0"
+                    >
+                        Send
+                    </button>
+                </div>
+            </form>
+            <!--Input Form Ends-->
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+         document.addEventListener("DOMContentLoaded", function() {
+            const queryForm = document.getElementById("query-form");
+            const loader = document.getElementById("loader");
+            const senderButton = document.getElementById("sender");
+
+            queryForm.addEventListener("submit", function() {
+                loader.classList.remove("hidden");
+                senderButton.disabled = true;
+                senderButton.classList.add("opacity-40");
+            });
+        });
+        if ( window.history.replaceState ) {
+            window.history.replaceState( null, null, window.location.href );
+        }
+    </script>
+  </body>
+</html>
